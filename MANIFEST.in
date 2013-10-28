@@ -1,0 +1,5 @@
+include AUTHORS
+include CHANGELOG.rst
+include COPYING
+include README.rst
+include example.py
