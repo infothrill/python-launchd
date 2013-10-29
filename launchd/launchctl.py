@@ -68,7 +68,7 @@ class LaunchdJob(object):
         from subprocess import CalledProcessError
         try:
             _ = job_properties(self.label)
-        except CalledProcessError:
+        except (CalledProcessError, ValueError):
             return False
         else:
             return True
@@ -77,7 +77,7 @@ class LaunchdJob(object):
         from subprocess import CalledProcessError
         try:
             self._properties = job_properties(self.label)
-        except CalledProcessError:
+        except (CalledProcessError, ValueError):
             self._reset()
             raise ValueError("The job ('%s') does not exist!" % self.label)
         else:
@@ -102,20 +102,45 @@ class LaunchdJob(object):
         return self._plist_fname
 
 
-def job_properties(joblabel):
+def job_properties_pyobjc(joblabel):
+    val = ServiceManagement.SMJobCopyDictionary(None, joblabel)
+    if val is None:
+        raise ValueError("job %s does not exist" % joblabel)
+    return dict(val)
+
+
+def job_properties_cmd(joblabel):
     '''
     Wrapper for `launchctl -x LABEL`
 
     Returns dictionary
     :param job: string label or LaunchdJob
     '''
+    if PYOBJC:
+        return job_properties_pyobjc(joblabel)
     if sys.version_info < (3, 0):
-        return dict(plistlib.readPlistFromString(launchctl("list", "-x", joblabel)))
+        return dict(plistlib.readPlistFromString(launchctl("list", "-x", joblabel.encode("utf-8"))))
     else:
         return dict(plistlib.readPlistFromBytes(launchctl("list", "-x", joblabel)))
 
 
-def jobs():
+def jobs_pyobjc():
+    for entry in ServiceManagement.SMCopyAllJobDictionaries(None):
+        if entry['Label'].startswith("0x"):
+            continue
+        label = entry['Label']
+        if 'PID' in entry:
+            pid = int(entry['PID'])
+        else:
+            pid = None
+        if 'LastExitStatus' in entry:
+            status = int(entry['LastExitStatus'])
+        else:
+            status = None
+        yield LaunchdJob(label, pid, status)
+
+
+def jobs_cmd():
     '''
     Wrapper for `launchctl list`
 
@@ -145,6 +170,15 @@ def jobs():
         else:
             status = None
         yield LaunchdJob(label, pid, status)
+
+PYOBJC = True
+if PYOBJC:
+    import ServiceManagement
+    job_properties = job_properties_pyobjc
+    jobs = jobs_pyobjc
+else:
+    job_properties = job_properties_cmd
+    jobs = jobs_cmd
 
 
 def start():

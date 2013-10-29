@@ -7,6 +7,11 @@ import types
 
 import launchd
 
+
+if sys.version_info >= (3, 0):
+    unicode = str
+
+
 launchdtestplist = dict(
           Disabled=False,
           Label="testlaunchdwrapper_python",
@@ -45,7 +50,7 @@ class LaunchctlTestCase(unittest.TestCase):
             self.assertTrue(isinstance(job.pid, (int, types.NoneType)))
             self.assertTrue(isinstance(job.laststatus, (int, types.NoneType)))
             self.assertTrue(isinstance(job.properties, dict))
-            self.assertTrue(isinstance(job.plistfilename, (str, types.NoneType)))
+            self.assertTrue(isinstance(job.plistfilename, (str, unicode, types.NoneType)))
             # the next 2 fail sometimes due to short lived processes that
             # have disappeared by the time we reach this test
             self.assertTrue('PID' in job.properties if job.pid is not None else True)
