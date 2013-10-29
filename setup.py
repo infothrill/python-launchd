@@ -10,17 +10,19 @@ except ImportError:
 classifiers = [line.strip() for line in """
 Development Status :: 3 - Alpha
 Intended Audience :: Developers
+Intended Audience :: System Administrators
 License :: DFSG approved
 License :: OSI Approved
 License :: OSI Approved :: MIT License
 Topic :: Software Development :: Libraries :: Python Modules
-Environment :: Console
+Environment :: MacOS X
 Natural Language :: English
 Operating System :: MacOS :: MacOS X
 Programming Language :: Python
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3.2
 Programming Language :: Python :: 3.3
+Programming Language :: Python :: Implementation :: CPython
 """.splitlines() if len(line) > 0]
 
 install_requires = ["six", "pyobjc-framework-ServiceManagement"]
