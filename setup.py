@@ -23,7 +23,7 @@ Programming Language :: Python :: 3.2
 Programming Language :: Python :: 3.3
 """.splitlines() if len(line) > 0]
 
-install_requires = []
+install_requires = ["pyobjc-framework-ServiceManagement"]
 if sys.version_info < (3, 2):
     install_requires.append("argparse")
 
