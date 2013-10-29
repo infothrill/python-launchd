@@ -28,6 +28,11 @@ install_requires = ["six", "pyobjc-framework-ServiceManagement"]
 if sys.version_info < (3, 2):
     install_requires.append("argparse")
 
+if not 'darwin' in sys.platform:
+    import os
+    sys.stderr.write("This package can only be installed and run on OS X!" + os.linesep)
+    sys.exit(1)
+
 setup(name="launchd",
       packages=["launchd", "launchd.tests"],
       version="0.1",
