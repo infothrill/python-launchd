@@ -3,13 +3,10 @@
 import unittest
 import sys
 import os
-import types
+
+import six
 
 import launchd
-
-
-if sys.version_info >= (3, 0):
-    unicode = str
 
 
 launchdtestplist = dict(
@@ -47,10 +44,10 @@ class LaunchctlTestCase(unittest.TestCase):
         for job in jobs:
             count += 1
             self.assertTrue(isinstance(job, launchd.LaunchdJob))
-            self.assertTrue(isinstance(job.pid, (int, types.NoneType)))
-            self.assertTrue(isinstance(job.laststatus, (int, types.NoneType)))
+            self.assertTrue(job.pid is None or isinstance(job.pid, int))
+            self.assertTrue(job.laststatus is None or isinstance(job.laststatus, int))
             self.assertTrue(isinstance(job.properties, dict))
-            self.assertTrue(isinstance(job.plistfilename, (str, unicode, types.NoneType)))
+            self.assertTrue(job.plistfilename is None or isinstance(job.plistfilename, six.string_types))
             # the next 2 fail sometimes due to short lived processes that
             # have disappeared by the time we reach this test
             self.assertTrue('PID' in job.properties if job.pid is not None else True)

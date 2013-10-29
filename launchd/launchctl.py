@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import plistlib
+import ServiceManagement
 
 from .cmd import launchctl
 from .plist import discover_filename
@@ -102,29 +101,14 @@ class LaunchdJob(object):
         return self._plist_fname
 
 
-def job_properties_pyobjc(joblabel):
+def job_properties(joblabel):
     val = ServiceManagement.SMJobCopyDictionary(None, joblabel)
     if val is None:
         raise ValueError("job %s does not exist" % joblabel)
     return dict(val)
 
 
-def job_properties_cmd(joblabel):
-    '''
-    Wrapper for `launchctl -x LABEL`
-
-    Returns dictionary
-    :param job: string label or LaunchdJob
-    '''
-    if PYOBJC:
-        return job_properties_pyobjc(joblabel)
-    if sys.version_info < (3, 0):
-        return dict(plistlib.readPlistFromString(launchctl("list", "-x", joblabel.encode("utf-8"))))
-    else:
-        return dict(plistlib.readPlistFromBytes(launchctl("list", "-x", joblabel)))
-
-
-def jobs_pyobjc():
+def jobs():
     for entry in ServiceManagement.SMCopyAllJobDictionaries(None):
         if entry['Label'].startswith("0x"):
             continue
@@ -139,46 +123,6 @@ def jobs_pyobjc():
             status = None
         yield LaunchdJob(label, pid, status)
 
-
-def jobs_cmd():
-    '''
-    Wrapper for `launchctl list`
-
-    Returns a generator for LaunchdJob
-    '''
-    if sys.version_info < (3, 0):
-        stdout = launchctl("list")
-    else:
-        stdout = launchctl("list").decode("utf-8")
-    # PID, Status, Label
-    lines = iter(stdout.splitlines())
-    # skip first line
-    next(lines)
-    sep = "\t"
-    Ox = "0x"
-    for line in lines:
-        pid, _, last = line.strip().partition(sep)
-        status, _, label = last.strip().partition(sep)
-        if label.startswith(Ox):
-            continue
-        if pid.isdigit():
-            pid = int(pid)
-        else:
-            pid = None
-        if status.isdigit():
-            status = int(status)
-        else:
-            status = None
-        yield LaunchdJob(label, pid, status)
-
-PYOBJC = True
-if PYOBJC:
-    import ServiceManagement
-    job_properties = job_properties_pyobjc
-    jobs = jobs_pyobjc
-else:
-    job_properties = job_properties_cmd
-    jobs = jobs_cmd
 
 
 def start():

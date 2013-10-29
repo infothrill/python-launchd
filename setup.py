@@ -23,7 +23,8 @@ Programming Language :: Python :: 3.2
 Programming Language :: Python :: 3.3
 """.splitlines() if len(line) > 0]
 
-install_requires = ["pyobjc-framework-ServiceManagement"]
+install_requires = ["six", "pyobjc-framework-ServiceManagement"]
+
 if sys.version_info < (3, 2):
     install_requires.append("argparse")
 
@@ -33,14 +34,11 @@ setup(name="launchd",
       author="Paul Kremer",
       author_email="@".join(("paul", "spurious.biz")),  # avoid spam,
       license="MIT License",
-      description="pythonic wrapper for the OS X launchd command",
+      description="pythonic wrapper for OS X launchd",
       long_description=open("README.rst", "r").read(),
       url="https://github.com/infothrill/python-launchd",
       install_requires=install_requires,
-      #entry_points=("""
-      #                [console_scripts]
-      #                foo=launchd.cli:main
-      #                """),
       classifiers=classifiers,
       test_suite='launchd.tests',
+      tests_require=["six"],
       )
