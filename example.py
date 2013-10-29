@@ -39,11 +39,10 @@ def uninstall():
 
 def main():
     import time
-    job = launchd.LaunchdJob(myplist['Label'])
-    try:
-        job.refresh()
-    except ValueError:
-        print("'%s' is not loaded in launchd. Installing..." % (job.label))
+    label = myplist['Label']
+    job = launchd.LaunchdJob(label)
+    if not job.exists():
+        print("'%s' is not loaded in launchd. Installing..." % (label))
         install()
         job.refresh()
         while job.pid is not None:

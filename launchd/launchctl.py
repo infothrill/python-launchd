@@ -12,11 +12,24 @@ class LaunchdJob(object):
     Custom class that allows us to lazily load the properties
     of the LaunchdJob when accessed.
     '''
-    def __init__(self, label, pid=None, laststatus=None):
+    def __init__(self, label, pid=None, laststatus=None, load=False):
+        '''
+        Instantiate a LaunchdJob instance. Only the label is truly required.
+        If no pid or laststatus are specified, they will be detected during
+        construction.
+
+        :param label: required string job label
+        :param pid: optional int, if known. Can be None.
+        :param laststatus: optional int, if known. Can be None.
+        :param load: boolean. Load job details from launchd during construction.
+        '''
         self._label = label
-        self._pid = pid
-        self._laststatus = laststatus
-        self._properties = None
+        if load:
+            self.refresh()
+        else:
+            self._pid = pid
+            self._laststatus = laststatus
+            self._properties = None
         self._plist_fname = None
 
     def _reset(self):
@@ -44,18 +57,29 @@ class LaunchdJob(object):
         information of the job in question. Internally, this is retrieved
         using `launchctl -x LABEL`. Keep in mind that some dictionary keys
         are not always present (for example 'PID').
+        If the job specified by the label cannot be found in launchd, then
+        this method raises a ValueError exception.
         '''
         if self._properties is None:
             self.refresh()
         return self._properties
 
+    def exists(self):
+        from subprocess import CalledProcessError
+        try:
+            _ = job_properties(self.label)
+        except CalledProcessError:
+            return False
+        else:
+            return True
+
     def refresh(self):
         from subprocess import CalledProcessError
         try:
-            self._properties = job_properties(self)
+            self._properties = job_properties(self.label)
         except CalledProcessError:
             self._reset()
-            raise ValueError("This job ('%s') does not exist" % str(self.label))
+            raise ValueError("The job ('%s') does not exist!" % self.label)
         else:
             # update pid and laststatus attributes
             if 'PID' in self._properties:
@@ -78,21 +102,17 @@ class LaunchdJob(object):
         return self._plist_fname
 
 
-def job_properties(job):
+def job_properties(joblabel):
     '''
     Wrapper for `launchctl -x LABEL`
 
     Returns dictionary
     :param job: string label or LaunchdJob
     '''
-    if isinstance(job, LaunchdJob):
-        str_label = job.label
-    else:
-        str_label = job
     if sys.version_info < (3, 0):
-        return dict(plistlib.readPlistFromString(launchctl("list", "-x", str_label)))
+        return dict(plistlib.readPlistFromString(launchctl("list", "-x", joblabel)))
     else:
-        return dict(plistlib.readPlistFromBytes(launchctl("list", "-x", str_label)))
+        return dict(plistlib.readPlistFromBytes(launchctl("list", "-x", joblabel)))
 
 
 def jobs():

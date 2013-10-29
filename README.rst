@@ -36,14 +36,19 @@ Listing all launchd jobs:
 
 
 Detecting launchd runtime properties based on a label works by manually
-instantiating a LaunchdJob instance and querying the properties, which are
-dynamically loaded:
+instantiating a LaunchdJob instance and loading its properties, either by
+specifying 'load' in the constructor or calling .refresh():
 
 .. code-block:: python
 
-    finder = launchd.LaunchdJob("com.apple.Finder")
-    finder.refresh()
+    finder = launchd.LaunchdJob("com.apple.Finder", load=True)
     print(finder.pid)
+
+    fubar = launchd.LaunchdJob("com.apple.Fubar")
+    if fubar.exists():
+        fubar.refresh()
+    else:
+        print("No such launchd job: %s" % fubar.label)
 
 Find all plist filenames of currently running jobs:
 

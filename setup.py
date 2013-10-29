@@ -43,5 +43,4 @@ setup(name="launchd",
       #                """),
       classifiers=classifiers,
       test_suite='launchd.tests',
-      #tests_require=['bottle==0.11.6'],
       )
