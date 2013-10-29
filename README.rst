@@ -14,7 +14,7 @@ python-launchd - pythonic interface for launchd
         :target: https://crate.io/packages/launchd/
 
 
-launchd is a pythonic interface to interact with OS X's launchd. It provides
+launchd is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_. It provides
 access to basic querying and interaction with launchd by using the Objective C 
 `ServiceManagement framework <https://developer.apple.com/library/mac/documentation/General/Reference/ServiceManagementFwRef/_index.html#//apple_ref/doc/uid/TP40009335>`_
 as well as the `launchd` command line utility.
