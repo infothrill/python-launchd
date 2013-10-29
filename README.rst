@@ -1,12 +1,6 @@
 python-launchd - pythonic interface for launchd
 ================================================
 
-.. image:: https://travis-ci.org/infothrill/python-launchd.png
-    :target: https://travis-ci.org/infothrill/python-launchd
-
-.. image:: https://coveralls.io/repos/infothrill/python-launchd/badge.png
-        :target: https://coveralls.io/r/infothrill/python-launchd
-
 .. image:: https://badge.fury.io/py/launchd.png
     :target: http://badge.fury.io/py/launchd
 
