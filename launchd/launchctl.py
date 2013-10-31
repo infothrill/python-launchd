@@ -4,6 +4,7 @@ import ServiceManagement
 
 from .cmd import launchctl
 from .plist import discover_filename
+from .util import convert_NSDictionary_to_dict
 
 
 class LaunchdJob(object):
@@ -54,40 +55,37 @@ class LaunchdJob(object):
         '''
         This is a lazily loaded dictionary containing the launchd runtime
         information of the job in question. Internally, this is retrieved
-        using `launchctl -x LABEL`. Keep in mind that some dictionary keys
-        are not always present (for example 'PID').
+        using ServiceManagement.SMJobCopyDictionary(). Keep in mind that
+        some dictionary keys are not always present (for example 'PID').
         If the job specified by the label cannot be found in launchd, then
         this method raises a ValueError exception.
         '''
+        if hasattr(self, '_nsproperties'):
+            self._properties = convert_NSDictionary_to_dict(self._nsproperties)
+            del self._nsproperties
+            #self._nsproperties = None
         if self._properties is None:
             self.refresh()
         return self._properties
 
     def exists(self):
-        from subprocess import CalledProcessError
-        try:
-            _ = job_properties(self.label)
-        except (CalledProcessError, ValueError):
-            return False
-        else:
-            return True
+        return ServiceManagement.SMJobCopyDictionary(None, self.label) != None
 
     def refresh(self):
-        from subprocess import CalledProcessError
-        try:
-            self._properties = job_properties(self.label)
-        except (CalledProcessError, ValueError):
+        val = ServiceManagement.SMJobCopyDictionary(None, self.label)
+        if val is None:
             self._reset()
-            raise ValueError("The job ('%s') does not exist!" % self.label)
+            raise ValueError("job '%s' does not exist" % self.label)
         else:
+            self._properties = convert_NSDictionary_to_dict(val)
             # update pid and laststatus attributes
-            if 'PID' in self._properties:
+            try:
                 self._pid = self._properties['PID']
-            else:
+            except KeyError:
                 self._pid = None
-            if 'LastExitStatus' in self._properties:
+            try:
                 self._laststatus = self._properties['LastExitStatus']
-            else:
+            except KeyError:
                 self._laststatus = None
 
     @property
@@ -101,28 +99,22 @@ class LaunchdJob(object):
         return self._plist_fname
 
 
-def job_properties(joblabel):
-    val = ServiceManagement.SMJobCopyDictionary(None, joblabel)
-    if val is None:
-        raise ValueError("job %s does not exist" % joblabel)
-    return dict(val)
-
-
 def jobs():
     for entry in ServiceManagement.SMCopyAllJobDictionaries(None):
-        if entry['Label'].startswith("0x"):
-            continue
         label = entry['Label']
-        if 'PID' in entry:
+        if label.startswith("0x"):
+            continue
+        try:
             pid = int(entry['PID'])
-        else:
+        except KeyError:
             pid = None
-        if 'LastExitStatus' in entry:
+        try:
             status = int(entry['LastExitStatus'])
-        else:
+        except KeyError:
             status = None
-        yield LaunchdJob(label, pid, status)
-
+        job = LaunchdJob(label, pid, status)
+        job._nsproperties = entry
+        yield job
 
 
 def start():

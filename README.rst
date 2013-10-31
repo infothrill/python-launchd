@@ -15,6 +15,9 @@ implemented using the Objective C
 as well as the `launchd` command line utility. Therefore, this python package
 can only be used on `OS X <http://en.wikipedia.org/wiki/OS_X>`_
 
+The python objective C bridge contains some special types. This package strips
+off all non built-in type information and returns pure python data.
+
 Examples
 ========
 
