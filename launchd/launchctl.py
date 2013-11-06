@@ -9,10 +9,10 @@ from .util import convert_NSDictionary_to_dict
 
 class LaunchdJob(object):
     '''
-    Custom class that allows us to lazily load the properties
+    Custom class that allows us to lazily query the properties
     of the LaunchdJob when accessed.
     '''
-    def __init__(self, label, pid=None, laststatus=None, load=False):
+    def __init__(self, label, pid=None, laststatus=None, query=False):
         '''
         Instantiate a LaunchdJob instance. Only the label is truly required.
         If no pid or laststatus are specified, they will be detected during
@@ -21,10 +21,10 @@ class LaunchdJob(object):
         :param label: required string job label
         :param pid: optional int, if known. Can be None.
         :param laststatus: optional int, if known. Can be None.
-        :param load: boolean. Load job details from launchd during construction.
+        :param query: boolean. Query job details from launchd during construction.
         '''
         self._label = label
-        if load:
+        if query:
             self.refresh()
         else:
             self._pid = pid

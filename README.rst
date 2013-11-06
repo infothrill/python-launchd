@@ -1,5 +1,5 @@
 python-launchd - pythonic interface for launchd
-================================================
+===============================================
 
 .. image:: https://badge.fury.io/py/launchd.png
     :target: http://badge.fury.io/py/launchd
@@ -37,19 +37,23 @@ Listing all launchd jobs:
 
 
 Detecting launchd runtime properties based on a label works by manually
-instantiating a LaunchdJob instance and loading its properties, either by
-specifying 'load' in the constructor or calling .refresh():
+instantiating a LaunchdJob instance and querying its properties, either by
+specifying 'query' in the constructor or calling .refresh():
 
 .. code-block:: python
 
-    finder = launchd.LaunchdJob("com.apple.Finder", load=True)
-    print(finder.pid)
+    # PID of Finder
+    print(launchd.LaunchdJob("com.apple.Finder", query=True).pid)
 
-    fubar = launchd.LaunchdJob("com.apple.Fubar")
-    if fubar.exists():
-        fubar.refresh()
+    # Detecting if a job is defined
+    if launchd.LaunchdJob("com.apple.Fubar").exists():
+        print("OK")
     else:
         print("No such launchd job: %s" % fubar.label)
+
+    # arbitrary launchd property querying:
+    print(launchd.LaunchdJob("com.apple.Finder").properties["OnDemand"])
+
 
 Find all plist filenames of currently running jobs:
 
