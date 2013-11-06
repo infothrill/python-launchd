@@ -95,7 +95,6 @@ Installation
 
 .. code-block:: bash
 
-    # NOT YET AVAILABLE
     $ pip install launchd
 
 or, if you want to work using the source tarball:
