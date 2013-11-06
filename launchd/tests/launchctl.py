@@ -69,7 +69,6 @@ class LaunchctlTestCase(unittest.TestCase):
         self.assertTrue(job.exists())
         self.assertFalse(hasattr(job, '_pid'))
         self.assertFalse(hasattr(job, '_laststatus'))
-        #self.assertEqual(None, job._laststatus)
         self.assertEqual(None, job._properties)
         job.refresh()
         self.assertNotEqual(None, job._pid)
