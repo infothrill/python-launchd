@@ -67,18 +67,19 @@ class LaunchctlTestCase(unittest.TestCase):
         label = "com.apple.Finder"
         job = launchd.LaunchdJob(label)
         self.assertTrue(job.exists())
-        self.assertEqual(None, job._pid)
-        self.assertEqual(None, job._laststatus)
+        self.assertFalse(hasattr(job, '_pid'))
+        self.assertFalse(hasattr(job, '_laststatus'))
+        #self.assertEqual(None, job._laststatus)
         self.assertEqual(None, job._properties)
         job.refresh()
         self.assertNotEqual(None, job._pid)
         self.assertNotEqual(None, job._laststatus)
         self.assertNotEqual(None, job._properties)
 
-        job = launchd.LaunchdJob(label, query=True)
+        job = launchd.LaunchdJob(label)
         self.assertTrue(job.exists())
-        self.assertNotEqual(None, job._pid)
-        self.assertNotEqual(None, job._laststatus)
+        self.assertNotEqual(None, job.pid)
+        self.assertNotEqual(None, job.laststatus)
         self.assertNotEqual(None, job._properties)
 
         # let's do the same with something invalid:
@@ -88,6 +89,13 @@ class LaunchctlTestCase(unittest.TestCase):
         self.assertEqual(2, job.laststatus)
         self.assertFalse(job.exists())
         self.assertRaises(ValueError, job.refresh)
-        # these properties are reset during refresh()
+        # even though refresh() was called, the object remains unchanged:
+        self.assertEqual(1, job.pid)
+        self.assertEqual(2, job.laststatus)
+        self.assertFalse(job.exists())
+
+        # also test "None":
+        label = "com.apple.Nonexistant-bogus-entry2"
+        job = launchd.LaunchdJob(label, None, None)
         self.assertEqual(None, job.pid)
         self.assertEqual(None, job.laststatus)

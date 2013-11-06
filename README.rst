@@ -36,14 +36,13 @@ Listing all launchd jobs:
         print(job.label, job.pid, job.status, job.properties, job.plistfilename)
 
 
-Detecting launchd runtime properties based on a label works by manually
-instantiating a LaunchdJob instance and querying its properties, either by
-specifying 'query' in the constructor or calling .refresh():
+To query existing job properties, instantiate a LaunchdJob instance with a label
+and query its pid, lastatus and properties:
 
 .. code-block:: python
 
     # PID of Finder
-    print(launchd.LaunchdJob("com.apple.Finder", query=True).pid)
+    print(launchd.LaunchdJob("com.apple.Finder").pid)
 
     # Detecting if a job is defined
     if launchd.LaunchdJob("com.apple.Fubar").exists():

@@ -12,29 +12,21 @@ class LaunchdJob(object):
     Custom class that allows us to lazily query the properties
     of the LaunchdJob when accessed.
     '''
-    def __init__(self, label, pid=None, laststatus=None, query=False):
+    def __init__(self, label, pid=-1, laststatus=''):
         '''
-        Instantiate a LaunchdJob instance. Only the label is truly required.
-        If no pid or laststatus are specified, they will be detected during
-        construction.
+        Instantiate a LaunchdJob instance. Only the label is required.
+        If no pid or laststatus are specified, they will be queried when
+        accessed.
 
         :param label: required string job label
         :param pid: optional int, if known. Can be None.
         :param laststatus: optional int, if known. Can be None.
-        :param query: boolean. Query job details from launchd during construction.
         '''
         self._label = label
-        if query:
-            self.refresh()
-        else:
+        if pid != -1:  # -1 indicates no value specified
             self._pid = pid
+        if laststatus != '':
             self._laststatus = laststatus
-            self._properties = None
-        self._plist_fname = None
-
-    def _reset(self):
-        self._pid = None
-        self._laststatus = None
         self._properties = None
         self._plist_fname = None
 
@@ -44,11 +36,20 @@ class LaunchdJob(object):
 
     @property
     def pid(self):
+        try:
+            return self._pid
+        except AttributeError:
+            pass
+        self.refresh()
         return self._pid
 
     @property
     def laststatus(self):
-        return self._laststatus
+        try:
+            return self._laststatus
+        except AttributeError:
+            self.refresh()
+            return self._laststatus
 
     @property
     def properties(self):
@@ -74,7 +75,6 @@ class LaunchdJob(object):
     def refresh(self):
         val = ServiceManagement.SMJobCopyDictionary(None, self.label)
         if val is None:
-            self._reset()
             raise ValueError("job '%s' does not exist" % self.label)
         else:
             self._properties = convert_NSDictionary_to_dict(val)
