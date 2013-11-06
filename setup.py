@@ -32,8 +32,7 @@ if sys.version_info < (3, 2):
 
 if not 'darwin' in sys.platform:
     import os
-    sys.stderr.write("This package can only be installed and run on OS X!" + os.linesep)
-    sys.exit(1)
+    sys.stderr.write("Warning: The package 'launchd' can only be installed and run on OS X!" + os.linesep)
 
 setup(name="launchd",
       packages=["launchd", "launchd.tests"],
