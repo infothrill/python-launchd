@@ -75,7 +75,7 @@ class LaunchctlTestCase(unittest.TestCase):
         self.assertNotEqual(None, job._laststatus)
         self.assertNotEqual(None, job._properties)
 
-        job = launchd.LaunchdJob(label, load=True)
+        job = launchd.LaunchdJob(label, query=True)
         self.assertTrue(job.exists())
         self.assertNotEqual(None, job._pid)
         self.assertNotEqual(None, job._laststatus)
