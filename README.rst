@@ -59,7 +59,7 @@ Detect if a job exists:
    >>> launchd.LaunchdJob("com.example.fubar").exists()
    False
 
-launchd properties:
+launchd job properties (these come directly from launchd and NOT the .plist files):
 
 .. code-block:: python
 
@@ -78,6 +78,15 @@ Find all plist filenames of currently running jobs:
       if job.pid is None or job.plistfilename is None:
          continue
       print(job.plistfilename)
+
+Job properties of a given job (this uses the actual .plist file):
+
+.. code-block:: python
+   >>> launchd.plist.read("com.apple.kextd")
+   {'ProgramArguments': ['/usr/libexec/kextd'], 'KeepAlive': {'SuccessfulExit': False},
+   'POSIXSpawnType': 'Interactive', 'MachServices': {'com.apple.KernelExtensionServer':
+   {'HostSpecialPort': 15}}, 'Label': 'com.apple.kextd'}
+
 
 
 Installation

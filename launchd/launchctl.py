@@ -109,10 +109,10 @@ def jobs():
         except KeyError:
             pid = None
         try:
-            status = int(entry['LastExitStatus'])
+            laststatus = int(entry['LastExitStatus'])
         except KeyError:
-            status = None
-        job = LaunchdJob(label, pid, status)
+            laststatus = None
+        job = LaunchdJob(label, pid, laststatus)
         job._nsproperties = entry
         yield job
 
@@ -128,10 +128,8 @@ def stop(*args):
 
 
 def load(*args):
-    raise NotImplementedError()
     return launchctl("load", *args)
 
 
 def unload(*args):
-    raise NotImplementedError()
     return launchctl("unload", *args)

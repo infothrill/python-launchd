@@ -8,43 +8,48 @@ import os
 
 import launchd
 
-myplist = dict(
-          Disabled=False,
-          Label="testlaunchdwrapper_python",
-          Nice=-15,
-          OnDemand=True,
-          ProgramArguments=["/bin/bash", "-c", "sleep 1 && echo 'Hello World' && exit 0"],
-          RunAtLoad=True,
-          ServiceDescription="runs a sample command",
-          ServiceIPC=False,
-          )
 
+def install(label, plist):
+    '''
+    Utility function to store a new .plist file and load it
 
-def install():
-    fname = launchd.plist.write(myplist, myplist['Label'], launchd.plist.USER)
+    :param label: job label
+    :param plist: a property list dictionary
+    '''
+    fname = launchd.plist.write(label, plist)
     launchd.load(fname)
 
 
-def uninstall():
-    fname = launchd.plist.discover_filename(myplist['Label'])
-    job = launchd.LaunchdJob(myplist['Label'])
-    try:
-        job.refresh()
-    except ValueError:
-        pass
-    else:
+def uninstall(label):
+    '''
+    Utility function to remove a .plist file and unload it
+
+    :param label: job label
+    '''
+    if launchd.LaunchdJob(label).exists():
+        fname = launchd.plist.discover_filename(label)
         launchd.unload(fname)
         os.unlink(fname)
 
 
 def main():
+    myplist = dict(
+              Disabled=False,
+              Label="testlaunchdwrapper_python",
+              Nice=-15,
+              OnDemand=True,
+              ProgramArguments=["/bin/bash", "-c", "sleep 1 && echo 'Hello World' && exit 0"],
+              RunAtLoad=True,
+              ServiceDescription="runs a sample command",
+              ServiceIPC=False,
+              )
+
     import time
     label = myplist['Label']
     job = launchd.LaunchdJob(label)
     if not job.exists():
         print("'%s' is not loaded in launchd. Installing..." % (label))
-        install()
-        job.refresh()
+        install(label, myplist)
         while job.pid is not None:
             print("Alive! PID = %s" % job.pid)
             job.refresh()
@@ -60,7 +65,7 @@ def main():
                 time.sleep(0.2)
 
     print("Uninstalling again...")
-    uninstall()
+    uninstall(label)
     return 0
 
 
