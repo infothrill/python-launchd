@@ -82,6 +82,7 @@ Find all plist filenames of currently running jobs:
 Job properties of a given job (this uses the actual .plist file):
 
 .. code-block:: python
+
    >>> launchd.plist.read("com.apple.kextd")
    {'ProgramArguments': ['/usr/libexec/kextd'], 'KeepAlive': {'SuccessfulExit': False},
    'POSIXSpawnType': 'Interactive', 'MachServices': {'com.apple.KernelExtensionServer':
