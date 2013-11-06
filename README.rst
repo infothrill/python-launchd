@@ -36,32 +36,48 @@ Listing all launchd jobs:
         print(job.label, job.pid, job.status, job.properties, job.plistfilename)
 
 
-To query existing job properties, instantiate a LaunchdJob instance with a label
-and query its pid, lastatus and properties:
+Find the pid and laststatus of a job:
 
 .. code-block:: python
 
-    # PID of Finder
-    print(launchd.LaunchdJob("com.apple.Finder").pid)
+   >>> launchd.LaunchdJob("com.apple.Finder").pid
+   278
 
-    # Detecting if a job is defined
-    if launchd.LaunchdJob("com.apple.Fubar").exists():
-        print("OK")
-    else:
-        print("No such launchd job: %s" % fubar.label)
+   >>> launchd.LaunchdJob("com.apple.Finder").laststatus
+   0
 
-    # arbitrary launchd property querying:
-    print(launchd.LaunchdJob("com.apple.Finder").properties["OnDemand"])
+   >>> launchd.LaunchdJob("com.example.fubar").pid
+   Traceback (most recent call last):
+     File "launchd/launchctl.py", line 78, in refresh
+       raise ValueError("job '%s' does not exist" % self.label)
+   ValueError: job 'com.example.fubar' does not exist
+
+Detect if a job exists:
+
+.. code-block:: python
+
+   >>> launchd.LaunchdJob("com.example.fubar").exists()
+   False
+
+launchd properties:
+
+.. code-block:: python
+
+   >>> launchd.LaunchdJob("com.apple.Finder").properties
+   {'OnDemand': 1, 'PID': 278, 'PerJobMachServices': {'com.apple.coredrag': 0, 'com.apple.axserver': 0, 'com.apple.CFPasteboardClient': 0, 'com.apple.tsm.portname': 0}, 'LimitLoadToSessionType': 'Aqua', 'Program': '/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder', 'TimeOut': 30, 'LastExitStatus': 0, 'Label': 'com.apple.Finder', 'MachServices': {'com.apple.finder.ServiceProvider': 10}}
+
+   >>> launchd.LaunchdJob("com.apple.Finder").properties["OnDemand"]
+   1
 
 
 Find all plist filenames of currently running jobs:
 
 .. code-block:: python
 
-    for job in launchd.jobs():
-        if job.pid is None or job.plistfilename is None:
-            continue
-        print(job.plistfilename)
+   for job in launchd.jobs():
+      if job.pid is None or job.plistfilename is None:
+         continue
+      print(job.plistfilename)
 
 
 Installation
