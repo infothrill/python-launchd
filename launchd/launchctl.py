@@ -117,16 +117,6 @@ def jobs():
         yield job
 
 
-def start(*args):
-    raise NotImplementedError()
-    return launchctl("start", *args)
-
-
-def stop(*args):
-    raise NotImplementedError()
-    return launchctl("stop", *args)
-
-
 def load(*args):
     return launchctl("load", *args)
 
