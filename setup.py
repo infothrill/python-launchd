@@ -36,7 +36,7 @@ if not 'darwin' in sys.platform:
 
 setup(name="launchd",
       packages=["launchd", "launchd.tests"],
-      version="0.1",
+      version="0.1.1",
       author="Paul Kremer",
       author_email="@".join(("paul", "spurious.biz")),  # avoid spam,
       license="MIT License",
