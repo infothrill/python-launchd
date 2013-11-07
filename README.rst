@@ -61,7 +61,12 @@ launchd job properties (these come directly from launchd and NOT the .plist file
 .. code-block:: python
 
    >>> launchd.LaunchdJob("com.apple.Finder").properties
-   {'OnDemand': 1, 'PID': 278, 'PerJobMachServices': {'com.apple.coredrag': 0, 'com.apple.axserver': 0, 'com.apple.CFPasteboardClient': 0, 'com.apple.tsm.portname': 0}, 'LimitLoadToSessionType': 'Aqua', 'Program': '/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder', 'TimeOut': 30, 'LastExitStatus': 0, 'Label': 'com.apple.Finder', 'MachServices': {'com.apple.finder.ServiceProvider': 10}}
+   {'OnDemand': 1, 'PID': 278, 'PerJobMachServices': {'com.apple.coredrag': 0,
+   'com.apple.axserver': 0, 'com.apple.CFPasteboardClient': 0,
+   'com.apple.tsm.portname': 0}, 'LimitLoadToSessionType': 'Aqua',
+   'Program': '/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder',
+   'TimeOut': 30, 'LastExitStatus': 0, 'Label': 'com.apple.Finder',
+   'MachServices': {'com.apple.finder.ServiceProvider': 10}}
 
    >>> launchd.LaunchdJob("com.apple.Finder").properties["OnDemand"]
    1

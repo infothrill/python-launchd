@@ -42,7 +42,7 @@ def discover_filename(label, scopes=None):
 
 
 def read(label, scope=None):
-    with open(discover_filename(label, (scope,)), 'rb') as f:
+    with open(discover_filename(label, scope), 'rb') as f:
         return plistlib.readPlist(f)
 
 
