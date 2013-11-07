@@ -78,4 +78,7 @@ class PlistToolPersistencyTest(unittest.TestCase):
         self.assertTrue(os.path.isfile(fname))
         props = plist.read(sample_label, plist.USER)
         self.assertEqual(sample_props, props)
-        os.unlink(fname)
+
+        # read it without specifying the scope:
+        props = plist.read(sample_label)
+        self.assertEqual(sample_props, props)
