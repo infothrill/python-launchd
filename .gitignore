@@ -1,6 +1,8 @@
+*.egg
 *.egg-info
 __pycache__
 .coverage
+.tox
+build
 dist
 htmlcov
-build
