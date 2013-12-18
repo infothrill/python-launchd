@@ -1,9 +1,6 @@
 .. image:: https://badge.fury.io/py/launchd.png
     :target: http://badge.fury.io/py/launchd
 
-.. image:: https://pypip.in/d/launchd/badge.png
-        :target: https://crate.io/packages/launchd/
-
 
 launchd is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_.
 It provides access to basic querying and interaction with launchd. It is
