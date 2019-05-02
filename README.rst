@@ -27,7 +27,7 @@ Listing all launchd jobs:
 .. code-block:: python
 
     for job in launchd.jobs():
-        print(job.label, job.pid, job.status, job.properties, job.plistfilename)
+        print(job.label, job.pid, job.laststatus, job.properties, job.plistfilename)
 
 
 Find the pid and laststatus of a job:
