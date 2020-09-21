@@ -1,9 +1,12 @@
 Release history
 ---------------
 
-0.1.2 (????)
-++++++++++++
-- added tox.ini for easier testing accross interpreter versions 
+0.1.2 (September 2020)
+++++++++++++++++++++++
+- added tox.ini for easier testing accross interpreter versions
+- added travis test setup
+- fixed incompatibility with `launchctl` in test code
+- fixed a typo in the README
 
 0.1.1 (November 2013)
 +++++++++++++++++++++

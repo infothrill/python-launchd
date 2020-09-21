@@ -1,8 +1,10 @@
-.. image:: https://badge.fury.io/py/launchd.png
-    :target: http://badge.fury.io/py/launchd
+.. image:: https://img.shields.io/pypi/v/launchd.svg
+    :target: https://pypi.python.org/pypi/launchd
 
+.. image:: https://travis-ci.org/infothrill/python-launchd.svg?branch=master
+    :target: https://travis-ci.org/infothrill/python-launchd
 
-launchd is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_.
+*launchd* is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_.
 It provides access to basic querying and interaction with launchd. It is
 implemented using the Objective C 
 `ServiceManagement framework <https://developer.apple.com/library/mac/documentation/General/Reference/ServiceManagementFwRef/_index.html#//apple_ref/doc/uid/TP40009335>`_
