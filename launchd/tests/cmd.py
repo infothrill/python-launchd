@@ -28,7 +28,7 @@ class LaunchdCmdTest(unittest.TestCase):
     def testlaunchctl_list_x(self):
         label = "com.apple.Finder"
         if six.PY2:
-            stdout = cmd.launchctl("list", "-x", label)
+            stdout = cmd.launchctl("list", label)
         else:
-            stdout = cmd.launchctl("list", "-x", label).decode("utf-8")
+            stdout = cmd.launchctl("list", label).decode("utf-8")
         self.assertTrue(isinstance(stdout, six.string_types))

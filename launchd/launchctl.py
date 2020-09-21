@@ -64,13 +64,13 @@ class LaunchdJob(object):
         if hasattr(self, '_nsproperties'):
             self._properties = convert_NSDictionary_to_dict(self._nsproperties)
             del self._nsproperties
-            #self._nsproperties = None
+            # self._nsproperties = None
         if self._properties is None:
             self.refresh()
         return self._properties
 
     def exists(self):
-        return ServiceManagement.SMJobCopyDictionary(None, self.label) != None
+        return ServiceManagement.SMJobCopyDictionary(None, self.label) is not None
 
     def refresh(self):
         val = ServiceManagement.SMJobCopyDictionary(None, self.label)
