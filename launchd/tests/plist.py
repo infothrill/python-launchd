@@ -49,6 +49,11 @@ class PlistToolTest(unittest.TestCase):
         fname = plist.discover_filename("com.apple.kextd", plist.USER)
         self.assertEqual(None, fname)
 
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
+    def test_read(self):
+        result = plist.read("com.apple.kextd", plist.DAEMON_OS)
+        self.assertIsInstance(result, dict)
+
 
 class PlistToolPersistencyTest(unittest.TestCase):
     def setUp(self):
