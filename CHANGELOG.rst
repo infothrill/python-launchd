@@ -1,6 +1,11 @@
 Release history
 ---------------
 
+0.2.0 (March 2021)
+++++++++++++++++++
+- drop python 2.x, 3.2, 3.3 support
+- fix plistlib calls (issue #4)
+
 0.1.2 (September 2020)
 ++++++++++++++++++++++
 - added tox.ini for easier testing accross interpreter versions

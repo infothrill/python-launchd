@@ -43,7 +43,7 @@ def discover_filename(label, scopes=None):
 
 def read(label, scope=None):
     with open(discover_filename(label, scope), 'rb') as f:
-        return plistlib.readPlist(f)
+        return plistlib.load(f)
 
 
 def write(label, plist, scope=USER):
@@ -57,5 +57,5 @@ def write(label, plist, scope=USER):
     '''
     fname = compute_filename(label, scope)
     with open(fname, "wb") as f:
-        plistlib.writePlist(plist, f)
+        plistlib.dump(plist, f)
     return fname
