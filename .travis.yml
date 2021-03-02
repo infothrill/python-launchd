@@ -12,10 +12,19 @@ matrix:
       env: PATH=/Users/travis/Library/Python/3.7/bin:$PATH
     - name: "Python 3.8 on macOS 10.15"
       os: osx
-      osx_image: xcode12.2
+      osx_image: xcode12u
       language: shell  # 'language: python' errors on Travis CI macOS
       before_install:
         - python3 --version
       install: pip3 install tox --user
       script: tox -e py38
       env: PATH=/Users/travis/Library/Python/3.8/bin:$PATH
+    - name: "Python 3.9 on macOS 10.15"
+      os: osx
+      osx_image: xcode12.2
+      language: shell  # 'language: python' errors on Travis CI macOS
+      before_install:
+        - python3 --version
+      install: pip3 install tox --user
+      script: tox -e py39
+      env: PATH=/Users/travis/Library/Python/3.9/bin:$PATH
