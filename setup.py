@@ -22,21 +22,16 @@ Environment :: MacOS X
 Natural Language :: English
 Operating System :: MacOS :: MacOS X
 Programming Language :: Python
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3.2
-Programming Language :: Python :: 3.3
 Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
 Programming Language :: Python :: Implementation :: CPython
 """.splitlines() if len(line) > 0]
 
 install_requires = ["six", "pyobjc-framework-ServiceManagement"]
-
-if sys.version_info < (3, 2):
-    install_requires.append("argparse")
 
 if not 'darwin' in sys.platform:
     sys.stderr.write("Warning: The package 'launchd' can only be installed and run on OS X!" + os.linesep)
@@ -51,7 +46,7 @@ setup(name="launchd",
       author="Paul Kremer",
       author_email="@".join(("paul", "spurious.biz")),  # avoid spam,
       license="MIT License",
-      description="pythonic interface for OS X launchd",
+      description="pythonic interface for macOS launchd",
       long_description=(open('README.rst', 'r').read() + '\n\n' +
                         open('CHANGELOG.rst', 'r').read()),
       url="https://github.com/infothrill/python-launchd",

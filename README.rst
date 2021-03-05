@@ -108,4 +108,4 @@ or, if you want to work using the source tarball:
 Requirements
 ============
 * OS X >= 10.6
-* Python 2.7, 3.2+
+* Python 3.4+

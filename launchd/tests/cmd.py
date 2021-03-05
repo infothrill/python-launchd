@@ -19,16 +19,10 @@ class LaunchdCmdTest(unittest.TestCase):
         self.assertRaises(ValueError, cmd.launchctl, ['foo'])
 
     def testlaunchctl_list(self):
-        if six.PY2:
-            stdout = cmd.launchctl("list")
-        else:
-            stdout = cmd.launchctl("list").decode("utf-8")
+        stdout = cmd.launchctl("list").decode("utf-8")
         self.assertTrue(isinstance(stdout, six.string_types))
 
     def testlaunchctl_list_x(self):
         label = "com.apple.Finder"
-        if six.PY2:
-            stdout = cmd.launchctl("list", label)
-        else:
-            stdout = cmd.launchctl("list", label).decode("utf-8")
+        stdout = cmd.launchctl("list", label).decode("utf-8")
         self.assertTrue(isinstance(stdout, six.string_types))
