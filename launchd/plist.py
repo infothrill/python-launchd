@@ -18,8 +18,12 @@ PLIST_LOCATIONS = {
 }
 
 
+def compute_directory(scope):
+    return os.path.expanduser(PLIST_LOCATIONS[scope])
+
+
 def compute_filename(label, scope):
-    return os.path.expanduser(os.path.join(PLIST_LOCATIONS[scope], label + ".plist"))
+    return os.path.join(compute_directory(scope), label + ".plist")
 
 
 def discover_filename(label, scopes=None):
@@ -51,10 +55,12 @@ def write(label, plist, scope=USER):
     Writes the given property list to the appropriate file on disk and returns
     the absolute filename.
 
+    Creates the underlying parent directory structure if missing.
     :param plist: dict
     :param label: string
     :param scope: oneOf(USER, USER_ADMIN, DAEMON_ADMIN, USER_OS, DAEMON_OS)
     '''
+    os.makedirs(compute_directory(scope), mode=0o755, exist_ok=True)
     fname = compute_filename(label, scope)
     with open(fname, "wb") as f:
         plistlib.dump(plist, f)

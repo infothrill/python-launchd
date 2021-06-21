@@ -1,6 +1,10 @@
 Release history
 ---------------
 
+0.x.x (TBD)
+++++++++++++++++++
+- changed: create directory hierarchy for plist file if not present. issue #6
+
 0.2.0 (March 2021)
 ++++++++++++++++++
 - drop python 2.x, 3.2, 3.3 support
