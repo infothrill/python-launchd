@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/launchd.svg
     :target: https://pypi.python.org/pypi/launchd
 
-.. image:: https://github.com/infothrill/python-launchd/actions/workflows/tests.yml/badge.svg?branch=master
+.. image:: https://github.com/infothrill/python-launchd/actions/workflows/tests.yml/badge.svg?branch=main
 
 *launchd* is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_.
 It provides access to basic querying and interaction with launchd. It is
