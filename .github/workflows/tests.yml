@@ -1,0 +1,19 @@
+---
+name: unit tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test-macos-1015:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          python3 --version
+          python3 -m pip install --upgrade pip
+          pip3 install tox
+      - name: Test with tox
+        run: tox -e py39

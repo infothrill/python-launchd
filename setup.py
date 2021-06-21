@@ -33,7 +33,7 @@ Programming Language :: Python :: Implementation :: CPython
 
 install_requires = ["six", "pyobjc-framework-ServiceManagement"]
 
-if not 'darwin' in sys.platform:
+if 'darwin' not in sys.platform:
     sys.stderr.write("Warning: The package 'launchd' can only be installed and run on OS X!" + os.linesep)
 
 v = open(os.path.join(os.path.dirname(__file__), 'launchd', '__init__.py'))
