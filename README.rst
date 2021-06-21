@@ -3,12 +3,12 @@
 
 .. image:: https://github.com/infothrill/python-launchd/actions/workflows/tests.yml/badge.svg?branch=main
 
-*launchd* is a pythonic interface to interact with OS X's `launchd <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man8/launchd.8.html>`_.
+*launchd* is a pythonic interface to interact with macOS's `launchd <https://en.wikipedia.org/wiki/Launchd>`_.
 It provides access to basic querying and interaction with launchd. It is
 implemented using the Objective C
 `ServiceManagement framework <https://developer.apple.com/library/mac/documentation/General/Reference/ServiceManagementFwRef/_index.html#//apple_ref/doc/uid/TP40009335>`_
 as well as the `launchd` command line utility. Therefore, this python package
-can only be used on `OS X <http://en.wikipedia.org/wiki/OS_X>`_
+can only be used on `macOS <http://en.wikipedia.org/wiki/MacOS>`_
 
 The python objective C bridge contains some special types. This package strips
 off all non built-in type information and returns pure python data.

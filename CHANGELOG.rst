@@ -1,9 +1,11 @@
 Release history
 ---------------
 
-0.x.x (TBD)
-++++++++++++++++++
+0.3.0 (June 2021)
++++++++++++++++++
 - changed: create directory hierarchy for plist file if not present. issue #6
+- improved: added automated flake8 tests, check-manifest and safety checks
+- changed: moved basic CI to GitHub actions
 
 0.2.0 (March 2021)
 ++++++++++++++++++

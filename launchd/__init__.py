@@ -2,7 +2,7 @@
 
 __author__ = "Paul Kremer"
 __email__ = "paul@spurious.biz"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from .launchctl import jobs, LaunchdJob, load, unload  # noqa: F401
 from . import plist  # noqa: F401
