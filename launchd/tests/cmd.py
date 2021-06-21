@@ -16,7 +16,7 @@ class LaunchdCmdTest(unittest.TestCase):
         unittest.TestCase.tearDown(self)
 
     def testlaunchctl_invalid_args(self):
-        self.assertRaises(ValueError, cmd.launchctl, ['foo'])
+        self.assertRaises(ValueError, cmd.launchctl, ["foo"])
 
     def testlaunchctl_list(self):
         stdout = cmd.launchctl("list").decode("utf-8")

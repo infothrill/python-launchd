@@ -9,16 +9,16 @@ import six
 import launchd
 
 
-launchdtestplist = dict(
-          Disabled=False,
-          Label="testlaunchdwrapper_python",
-          Nice=-15,
-          OnDemand=True,
-          ProgramArguments=["/bin/bash", "-c", "echo 'Hello World' && exit 0"],
-          RunAtLoad=True,
-          ServiceDescription="runs a sample command",
-          ServiceIPC=False,
-          )
+launchdtestplist = {
+    "Disabled": False,
+    "Label": "testlaunchdwrapper_python",
+    "Nice": -15,
+    "OnDemand": True,
+    "ProgramArguments": ["/bin/bash", "-c", "echo 'Hello World' && exit 0"],
+    "RunAtLoad": True,
+    "ServiceDescription": "runs a sample command",
+    "ServiceIPC": False,
+}
 
 
 class LaunchctlTestCase(unittest.TestCase):
@@ -31,10 +31,10 @@ class LaunchctlTestCase(unittest.TestCase):
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
     def test_examples(self):
-        activejobs = [job for job in launchd.jobs() if job.pid is not None]
-        inactivejobs = [job for job in launchd.jobs() if job.pid is None]
-        errorjobs = [job for job in launchd.jobs() if job.laststatus != 0 and job.laststatus is not None]
-        ondemandjobs = [job for job in launchd.jobs() if job.properties['OnDemand'] is True]
+        [job for job in launchd.jobs() if job.pid is not None]  # activejobs
+        [job for job in launchd.jobs() if job.pid is None]  # inactivejobs
+        [job for job in launchd.jobs() if job.laststatus != 0 and job.laststatus is not None]  # errorjobs
+        [job for job in launchd.jobs() if job.properties["OnDemand"] is True]  # ondemandjobs
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
     def test_launchd_jobs(self):
@@ -50,8 +50,8 @@ class LaunchctlTestCase(unittest.TestCase):
             self.assertTrue(job.plistfilename is None or isinstance(job.plistfilename, six.string_types))
             # the next 2 fail sometimes due to short lived processes that
             # have disappeared by the time we reach this test
-            self.assertTrue('PID' in job.properties if job.pid is not None else True)
-            self.assertTrue('PID' not in job.properties if job.pid is None else True)
+            self.assertTrue("PID" in job.properties if job.pid is not None else True)
+            self.assertTrue("PID" not in job.properties if job.pid is None else True)
         self.assertTrue(count > 0)
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
@@ -67,8 +67,8 @@ class LaunchctlTestCase(unittest.TestCase):
         label = "com.apple.Finder"
         job = launchd.LaunchdJob(label)
         self.assertTrue(job.exists())
-        self.assertFalse(hasattr(job, '_pid'))
-        self.assertFalse(hasattr(job, '_laststatus'))
+        self.assertFalse(hasattr(job, "_pid"))
+        self.assertFalse(hasattr(job, "_laststatus"))
         self.assertEqual(None, job._properties)
         job.refresh()
         self.assertNotEqual(None, job._pid)

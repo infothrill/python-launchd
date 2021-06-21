@@ -16,4 +16,4 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install tox
       - name: Test with tox
-        run: tox -e py39
+        run: tox -e py39,style

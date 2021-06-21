@@ -33,13 +33,13 @@ Programming Language :: Python :: Implementation :: CPython
 
 install_requires = ["six", "pyobjc-framework-ServiceManagement"]
 
-if 'darwin' not in sys.platform:
+if "darwin" not in sys.platform:
     sys.stderr.write("Warning: The package 'launchd' can only be installed and run on OS X!" + os.linesep)
 
-v = open(os.path.join(os.path.dirname(__file__), 'launchd', '__init__.py'))
-VERSION = re.compile(r".*__version__ = '(.*?)'", re.S).match(v.read()).group(1)
+v = open(os.path.join(os.path.dirname(__file__), "launchd", "__init__.py"))
+VERSION = re.compile(r".*__version__ = \"(.*?)\"", re.S).match(v.read()).group(1)
 v.close()
-
+LONG_DESCRIPTION = open("README.rst", "r").read() + "\n\n" + open("CHANGELOG.rst", "r").read()
 setup(name="launchd",
       packages=["launchd", "launchd.tests"],
       version=VERSION,
@@ -47,11 +47,10 @@ setup(name="launchd",
       author_email="@".join(("paul", "spurious.biz")),  # avoid spam,
       license="MIT License",
       description="pythonic interface for macOS launchd",
-      long_description=(open('README.rst', 'r').read() + '\n\n' +
-                        open('CHANGELOG.rst', 'r').read()),
+      long_description=LONG_DESCRIPTION,
       url="https://github.com/infothrill/python-launchd",
       install_requires=install_requires,
       classifiers=classifiers,
-      test_suite='launchd.tests',
+      test_suite="launchd.tests",
       tests_require=["six"],
       )
