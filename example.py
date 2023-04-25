@@ -48,23 +48,23 @@ def main():
     label = myplist["Label"]
     job = launchd.LaunchdJob(label)
     if not job.exists():
-        print("'%s' is not loaded in launchd. Installing..." % (label))  # noqa: T001
+        print("'%s' is not loaded in launchd. Installing..." % (label))  # noqa: T201
         install(label, myplist)
         while job.pid is not None:
-            print("Alive! PID = %s" % job.pid)  # noqa: T001
+            print("Alive! PID = %s" % job.pid)  # noqa: T201
             job.refresh()
             time.sleep(0.2)
     else:
         if job.pid is None:
-            print("'%s' is loaded but not currently running" % (job.label))  # noqa: T001
+            print("'%s' is loaded but not currently running" % (job.label))  # noqa: T201
         else:
-            print("'%s' is loaded and currently running: PID = %s" % (job.label, job.pid))  # noqa: T001
+            print("'%s' is loaded and currently running: PID = %s" % (job.label, job.pid))  # noqa: T201
             while job.pid is not None:
-                print("Alive! PID = %s" % job.pid)  # noqa: T001
+                print("Alive! PID = %s" % job.pid)  # noqa: T201
                 job.refresh()
                 time.sleep(0.2)
 
-    print("Uninstalling again...")  # noqa: T001
+    print("Uninstalling again...")  # noqa: T201
     uninstall(label)
     return 0
 
