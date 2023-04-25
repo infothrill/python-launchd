@@ -38,6 +38,7 @@ class PlistToolTest(unittest.TestCase):
         self.assertTrue(fname.startswith("/System/Library/LaunchDaemons/"))
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
+    @unittest.skipIf(sys.version_info >= (3, 11), "com.apple.kextd was removed in macOS v11")
     def test_discover_filename(self):
         fname = plist.discover_filename("com.apple.kextd", plist.DAEMON_OS)
         self.assertIsNotNone(fname)
@@ -52,6 +53,7 @@ class PlistToolTest(unittest.TestCase):
         self.assertIsNone(fname)
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
+    @unittest.skipIf(sys.version_info >= (3, 11), "com.apple.kextd was removed in macOS v11")
     def test_read(self):
         result = plist.read("com.apple.kextd", plist.DAEMON_OS)
         self.assertIsInstance(result, dict)
