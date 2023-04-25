@@ -46,8 +46,8 @@ class PlistToolTest(unittest.TestCase):
         fname2 = plist.discover_filename("com.apple.kextd")
         self.assertTrue(os.path.isfile(fname2))
 
-        fname = plist.discover_filename("com.apple.kextd", plist.USER)
-        self.assertEqual(None, fname)
+        with self.assertRaises(FileNotFoundError):
+            fname = plist.discover_filename("com.apple.kextd", plist.USER)
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
     def test_read(self):
@@ -75,8 +75,8 @@ class PlistToolPersistencyTest(unittest.TestCase):
         sample_label = "com.example.unittest"
         sample_props = {"Label": "testlaunchdwrapper_python"}
 
-        fname = plist.discover_filename(sample_label, plist.USER)
-        self.assertEqual(None, fname)
+        with self.assertRaises(FileNotFoundError):
+            fname = plist.discover_filename(sample_label, plist.USER)
         plist.write(sample_label, sample_props, plist.USER)
 
         fname = plist.discover_filename(sample_label, plist.USER)
