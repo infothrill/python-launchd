@@ -26,7 +26,7 @@ def compute_filename(label, scope):
     return os.path.join(compute_directory(scope), label + ".plist")
 
 
-def discover_filename(label, scopes=None):
+def discover_filename(label: str, scopes=None) -> str:
     """
     Check the filesystem for the existence of a .plist file matching the job label.
     Optionally specify one or more scopes to search (default all).
@@ -34,15 +34,14 @@ def discover_filename(label, scopes=None):
     :param label: string
     :param scope: tuple or list or oneOf(USER, USER_ADMIN, DAEMON_ADMIN, USER_OS, DAEMON_OS)
     """
-    if scopes is None:
-        scopes = list(PLIST_LOCATIONS)
-    elif not isinstance(scopes, (list, tuple)):
+    scopes = scopes or tuple(PLIST_LOCATIONS)
+    if not isinstance(scopes, (list, tuple)):
         scopes = (scopes, )
     for thisscope in scopes:
         plistfilename = compute_filename(label, thisscope)
         if os.path.isfile(plistfilename):
             return plistfilename
-    return None
+    raise FileNotFoundError(f"{}, {}".format(label, scopes))
 
 
 def read(label, scope=None):
