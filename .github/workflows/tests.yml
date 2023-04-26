@@ -6,8 +6,12 @@ on:
   - pull_request
 
 jobs:
-  test-macos-1015:
-    runs-on: macos-10.15
+  test:
+    strategy:
+      fail-fast: false
+      matrix:  # https://github.com/actions/runner-images#available-images
+        os: [macos-10.15, macos-11, macos-12]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
@@ -16,4 +20,4 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install tox
       - name: Test with tox
-        run: tox -e py39,style
+        run: tox -e py,style
