@@ -41,7 +41,7 @@ def discover_filename(label: str, scopes=None) -> str:
         plistfilename = compute_filename(label, thisscope)
         if os.path.isfile(plistfilename):
             return plistfilename
-    raise FileNotFoundError(f"{}, {}".format(label, scopes))
+    raise FileNotFoundError(f"{label}, {scopes}")
 
 
 def read(label, scope=None):
