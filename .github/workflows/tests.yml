@@ -13,7 +13,7 @@ jobs:
         os: [macos-10.15, macos-11, macos-12]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
       - name: Install dependencies
         run: |
           python3 --version
