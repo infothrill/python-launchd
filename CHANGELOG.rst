@@ -1,8 +1,8 @@
 Release history
 ---------------
 
-unreleased
-+++++++++++++++++
+1.0.0 (March 2026)
+++++++++++++++++++
 - Incompatible change: dropped support for `job.laststatus` (raises an exception)
 - Bumped requirements of macOS (14+) as well as Python (3.10+)
 - Adopted newer Apple SDK around SMAppService*
