@@ -84,11 +84,12 @@ Installation
 
     $ pip install launchd
 
-or, if you want to work using the source tarball:
+or, if you prefer working from a local checkout:
 
 .. code-block:: bash
 
-    $ python setup.py install
+    $ python -m build
+    $ pip install dist/launchd-*.whl
 
 
 Requirements
@@ -101,3 +102,30 @@ SMAppService integration
 =======================
 
 Job metadata is now collected through Apple’s `SMAppService <https://developer.apple.com/documentation/servicemanagement/smappservice>`_ API. Because that interface only exposes helper plists that the calling bundle can manage, `launchd.jobs()` now reports the property lists SMAppService can inspect (status, bundled configuration, etc.). `pid`/`LastExitStatus` therefore remain ``None`` in most cases, but ``properties["Config"]`` still contains the original plist contents. The low-level `launchctl` binary remains the implementation for ``load()``/``unload()`` until Apple publishes a direct replacement.
+
+Development
+===========
+
+Run the unit tests (example uses Python 3.10):
+
+.. code-block:: bash
+
+    $ tox -e py310
+
+Verify style/lint checks:
+
+.. code-block:: bash
+
+    $ tox -e style
+
+Build the source distribution and wheel:
+
+.. code-block:: bash
+
+    $ python -m build
+
+Publish via Twine (this rebuilds as part of the command):
+
+.. code-block:: bash
+
+    $ tox -e release

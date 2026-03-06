@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "launchd"
+dynamic = ["version"]
+description = "pythonic interface for macOS launchd"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["pyobjc-framework-ServiceManagement"]
+keywords = ["launchd", "macOS", "ServiceManagement", "pyobjc"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Environment :: MacOS X",
+    "Natural Language :: English",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+authors = [
+    { name = "Paul Kremer", email = "paul@spurious.biz" },
+]
+
+[project.urls]
+Homepage = "https://github.com/infothrill/python-launchd"
+Repository = "https://github.com/infothrill/python-launchd"
+Issues = "https://github.com/infothrill/python-launchd/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "launchd.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["launchd", "launchd.*"]
+
+[tool.flake8]
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D200",
+    "D204",
+    "D205",
+]
+exclude = [".git", "__pycache__", "build", "dist", ".tox", ".eggs", ".direnv"]
+max-line-length = 120
+inline-quotes = "double"
+per-file-ignores = ["example.py:T201"]
+
+[tool.check-manifest]
+ignore = [
+    ".coveragerc",
+    ".pre-commit-config.yaml",
+    ".pylintrc",
+    ".renovaterc.json",
+    ".github",
+    "tox.ini",
+    "requirements-style.txt",
+]

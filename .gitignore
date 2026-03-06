@@ -1,9 +1,9 @@
 *.egg
-*.egg-info
+*.egg-info/
 __pycache__
 .vscode
 .coverage
 .tox
-build
-dist
+build/
+dist/
 htmlcov

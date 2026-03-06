@@ -1,3 +1,4 @@
+include pyproject.toml
 include AUTHORS
 include CHANGELOG.rst
 include COPYING

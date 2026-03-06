@@ -1,5 +1,6 @@
 pip
 flake8>=3.7.5
+Flake8-pyproject>=1.2.4
 pydocstyle==6.3.0
 flake8-bandit>=1.0.1
 flake8-bugbear>=17.12.0
