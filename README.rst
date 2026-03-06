@@ -99,7 +99,7 @@ Requirements
 * macOS 13+ for the SMAppService-backed job metadata API
 
 SMAppService integration
-=======================
+========================
 
 Job metadata is now collected through Apple’s `SMAppService <https://developer.apple.com/documentation/servicemanagement/smappservice>`_ API. Because that interface only exposes helper plists that the calling bundle can manage, `launchd.jobs()` now reports the property lists SMAppService can inspect (status, bundled configuration, etc.). `pid`/`LastExitStatus` therefore remain ``None`` in most cases, but ``properties["Config"]`` still contains the original plist contents. The low-level `launchctl` binary remains the implementation for ``load()``/``unload()`` until Apple publishes a direct replacement.
 
