@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Example script showing how to install and remove plist based launchd jobs.
 """
@@ -58,7 +57,7 @@ def main():
         if job.pid is None:
             print("'%s' is loaded but not currently running" % (job.label))  # noqa: T201
         else:
-            print("'%s' is loaded and currently running: PID = %s" % (job.label, job.pid))  # noqa: T201
+            print(f"'{job.label}' is loaded and currently running: PID = {job.pid}")  # noqa: T201
             while job.pid is not None:
                 print("Alive! PID = %s" % job.pid)  # noqa: T201
                 job.refresh()

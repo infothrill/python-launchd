@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import ServiceManagement
 
 from .cmd import launchctl
@@ -7,11 +5,11 @@ from .plist import discover_filename
 from .util import convert_NSDictionary_to_dict
 
 
-class LaunchdJob(object):
+class LaunchdJob:
     """
     Class to lazily query the properties of the LaunchdJob when accessed.
     """
-    def __init__(self, label, pid=-1, laststatus=""):
+    def __init__(self, label: str, pid: int = -1, laststatus=""):
         """
         Instantiate a LaunchdJob instance. Only the label is required.
         If no pid or laststatus are specified, they will be queried when
@@ -88,7 +86,7 @@ class LaunchdJob(object):
                 self._laststatus = None
 
     @property
-    def plistfilename(self):
+    def plistfilename(self) -> str | None:
         """
         Lazily detect absolute filename of the property list file.
 

@@ -10,10 +10,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:  # https://github.com/actions/runner-images#available-images
-        os: [macos-10.15, macos-11, macos-12]
+        os: [macos-14, macos-15, macos-26]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           python3 --version

@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-
 import unittest
-
-import six
 
 from launchd import cmd
 
@@ -20,9 +16,9 @@ class LaunchdCmdTest(unittest.TestCase):
 
     def testlaunchctl_list(self):
         stdout = cmd.launchctl("list").decode("utf-8")
-        self.assertTrue(isinstance(stdout, six.string_types))
+        self.assertTrue(isinstance(stdout, str))
 
     def testlaunchctl_list_x(self):
         label = "com.apple.Finder"
         stdout = cmd.launchctl("list", label).decode("utf-8")
-        self.assertTrue(isinstance(stdout, six.string_types))
+        self.assertTrue(isinstance(stdout, str))

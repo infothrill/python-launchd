@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import unittest
 import sys
 import os
-
-import six
 
 import launchd
 
@@ -47,7 +43,7 @@ class LaunchctlTestCase(unittest.TestCase):
             self.assertTrue(job.pid is None or isinstance(job.pid, int))
             self.assertTrue(job.laststatus is None or isinstance(job.laststatus, int))
             self.assertTrue(isinstance(job.properties, dict), "props is not a dict: %s" % (type(job.properties)))
-            self.assertTrue(job.plistfilename is None or isinstance(job.plistfilename, six.string_types))
+            self.assertTrue(job.plistfilename is None or isinstance(job.plistfilename, str))
             # the next 2 fail sometimes due to short lived processes that
             # have disappeared by the time we reach this test
             self.assertTrue("PID" in job.properties if job.pid is not None else True)

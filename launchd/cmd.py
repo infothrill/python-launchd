@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-
 import subprocess  # noqa: S404
-
-import six
 
 
 def launchctl(subcommand, *args):
@@ -11,15 +7,15 @@ def launchctl(subcommand, *args):
 
     :param subcommand: string
     """
-    if not isinstance(subcommand, six.string_types):
+    if not isinstance(subcommand, str):
         raise ValueError("Argument is invalid: %r" % repr(subcommand))
-    if isinstance(subcommand, six.text_type):
+    if isinstance(subcommand, str):
         subcommand = subcommand.encode("utf-8")
 
     cmd = ["launchctl", subcommand]
     for arg in args:
-        if isinstance(arg, six.string_types):
-            if isinstance(arg, six.text_type):
+        if isinstance(arg, str):
+            if isinstance(arg, str):
                 cmd.append(arg.encode("utf-8"))
             else:
                 cmd.append(arg)

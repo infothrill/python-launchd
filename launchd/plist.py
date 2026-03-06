@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import plistlib
 
@@ -18,15 +16,15 @@ PLIST_LOCATIONS = {
 }
 
 
-def compute_directory(scope):
+def compute_directory(scope: int) -> str:
     return os.path.expanduser(PLIST_LOCATIONS[scope])
 
 
-def compute_filename(label, scope):
+def compute_filename(label: str, scope: int) -> str:
     return os.path.join(compute_directory(scope), label + ".plist")
 
 
-def discover_filename(label, scopes=None):
+def discover_filename(label: str, scopes: None | tuple[int] | list[int] = None) -> str | None:
     """
     Check the filesystem for the existence of a .plist file matching the job label.
     Optionally specify one or more scopes to search (default all).
@@ -45,12 +43,12 @@ def discover_filename(label, scopes=None):
     return None
 
 
-def read(label, scope=None):
+def read(label: str, scope: int | None = None):
     with open(discover_filename(label, scope), "rb") as f:
         return plistlib.load(f)
 
 
-def write(label, plist, scope=USER):
+def write(label: str, plist, scope=USER) -> str:
     """
     Write the property list to file on disk and return filename.
 

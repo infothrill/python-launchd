@@ -1,6 +1,12 @@
 Release history
 ---------------
 
+unreleased
++++++++++++++++++
+- Remover old python2 compatibility remnants (six, unicode)
+- Modernize code style for python 3.10+
+- Bump requirements of macOS (14+) as well as Python (3.10+)
+
 0.3.0 (June 2021)
 +++++++++++++++++
 - changed: create directory hierarchy for plist file if not present. issue #6

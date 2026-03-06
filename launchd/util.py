@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from Foundation import NSDictionary, NSArray
 from objc._pythonify import OC_PythonLong, OC_PythonFloat
 from objc import pyobjc_unicode
@@ -17,7 +15,7 @@ def convert_NS_to_python(val):
     elif isinstance(val, (OC_PythonFloat,)):
         return float(val)
     else:
-        raise TypeError("Unknown type '%s': '%r'!" % (str(type(val)), repr(val)))
+        raise TypeError(f"Unknown type '{str(type(val))}': '{repr(val)!r}'!")
 
 
 def convert_NSArray_to_tuple(nsarray):

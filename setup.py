@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
 import re
@@ -22,16 +21,13 @@ Environment :: MacOS X
 Natural Language :: English
 Operating System :: MacOS :: MacOS X
 Programming Language :: Python
-Programming Language :: Python :: 3.4
-Programming Language :: Python :: 3.5
-Programming Language :: Python :: 3.6
-Programming Language :: Python :: 3.7
-Programming Language :: Python :: 3.8
-Programming Language :: Python :: 3.9
+Programming Language :: Python :: 3.10
+Programming Language :: Python :: 3.11
+Programming Language :: Python :: 3.12
 Programming Language :: Python :: Implementation :: CPython
 """.splitlines() if len(line) > 0]
 
-install_requires = ["six", "pyobjc-framework-ServiceManagement"]
+install_requires = ["pyobjc-framework-ServiceManagement"]
 
 if "darwin" not in sys.platform:
     sys.stderr.write("Warning: The package 'launchd' can only be installed and run on OS X!" + os.linesep)
@@ -39,7 +35,7 @@ if "darwin" not in sys.platform:
 v = open(os.path.join(os.path.dirname(__file__), "launchd", "__init__.py"))
 VERSION = re.compile(r".*__version__ = \"(.*?)\"", re.S).match(v.read()).group(1)
 v.close()
-LONG_DESCRIPTION = open("README.rst", "r").read() + "\n\n" + open("CHANGELOG.rst", "r").read()
+LONG_DESCRIPTION = open("README.rst").read() + "\n\n" + open("CHANGELOG.rst").read()
 setup(name="launchd",
       packages=["launchd", "launchd.tests"],
       version=VERSION,
@@ -52,5 +48,5 @@ setup(name="launchd",
       install_requires=install_requires,
       classifiers=classifiers,
       test_suite="launchd.tests",
-      tests_require=["six"],
+      tests_require=[],
       )

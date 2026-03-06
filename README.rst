@@ -107,4 +107,4 @@ or, if you want to work using the source tarball:
 Requirements
 ============
 * OS X >= 10.6
-* Python 3.4+
+* Python 3.10+
