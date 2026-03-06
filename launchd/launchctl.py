@@ -23,6 +23,7 @@ class LaunchdJob:
         self._plist_fname = None
 
     def __repr__(self) -> str:
+        """Represent instance as string."""
         return f"LaunchdJob(label={self._label})"
 
     @property
@@ -40,7 +41,7 @@ class LaunchdJob:
 
     @property
     def laststatus(self):
-        """Unsupported since 1.0.0"""
+        """Unsupported since 1.0.0."""
         raise AttributeError("This property is not supported since 1.0.0")
 
     @property
@@ -67,6 +68,7 @@ class LaunchdJob:
             raise ValueError("job '%s' does not exist" % self.label)
         self._properties = info.properties
         from AppKit import NSRunningApplication
+
         def get_pid_by_bundle_id(bundle_id):
             # Retrieve all running applications with the specific bundle identifier
             apps = NSRunningApplication.runningApplicationsWithBundleIdentifier_(bundle_id.lower())

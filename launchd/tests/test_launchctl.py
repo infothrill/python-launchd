@@ -32,7 +32,7 @@ class LaunchctlTestCase(unittest.TestCase):
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
     def test_examples(self):
         for job in launchd.jobs():
-            self.assertTrue(type(job.pid) == int or job.pid == None)
+            self.assertTrue(isinstance(job.pid, int) or job.pid is None)
             self.assertEqual(type(job.properties), dict)
             self.assertTrue("Label" in job.properties)
         # [job for job in launchd.jobs() if job.properties["Label"] is not None]
@@ -111,8 +111,7 @@ class LaunchctlTestCase(unittest.TestCase):
     def test_unsupported(self):
         label = "com.apple.Finder"
         job = launchd.LaunchdJob(label)
-        self.assertRaises(AttributeError, lambda: print(job.laststatus))
-
+        self.assertRaises(AttributeError, lambda: str(job.laststatus))
 
     @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
     def test_launchd_lazy_constructor(self):

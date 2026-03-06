@@ -2,7 +2,6 @@
 Example script showing how to install and remove plist based launchd jobs.
 """
 
-import sys
 import os
 
 import launchd
