@@ -31,7 +31,7 @@ def uninstall(label):
         os.unlink(fname)
 
 
-def main():
+def install_uninstall():
     myplist = {
         "Disabled": False,
         "Label": "testlaunchdwrapper_python",
@@ -68,5 +68,11 @@ def main():
     return 0
 
 
+def listing():
+    for pid in (j.pid for j in launchd.jobs()):
+        print(pid)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    install_uninstall()
+    listing()

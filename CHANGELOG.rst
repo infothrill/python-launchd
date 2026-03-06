@@ -3,9 +3,13 @@ Release history
 
 unreleased
 +++++++++++++++++
-- Remover old python2 compatibility remnants (six, unicode)
-- Modernize code style for python 3.10+
-- Bump requirements of macOS (14+) as well as Python (3.10+)
+- Incompatible change: dropped support for `job.laststatus` (raises an exception)
+- Bumped requirements of macOS (14+) as well as Python (3.10+)
+- Adopted newer Apple SDK around SMAppService*
+- Applied implicit Apple convention of lower-casing all unit ids
+- Removed old python2 compatibility remnants (six, unicode)
+- Modernized code style for python 3.10+
+- Added __repr__ for launchd job ("LaunchdJob(label=com.apple.Finder)")
 
 0.3.0 (June 2021)
 +++++++++++++++++

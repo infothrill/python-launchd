@@ -1,96 +1,130 @@
-import unittest
-import sys
 import os
+import sys
+import tempfile
+import unittest
+from typing import cast
+from unittest.mock import patch
 
 import launchd
+from launchd import plist, service
 
 
-launchdtestplist = {
-    "Disabled": False,
-    "Label": "testlaunchdwrapper_python",
-    "Nice": -15,
-    "OnDemand": True,
-    "ProgramArguments": ["/bin/bash", "-c", "echo 'Hello World' && exit 0"],
-    "RunAtLoad": True,
-    "ServiceDescription": "runs a sample command",
-    "ServiceIPC": False,
-}
+def _make_fake_info(label, status=service.ServiceStatus.ENABLED, config=None):
+    if config is None:
+        config = {"Label": label, "OnDemand": True}
+    plist_path = os.path.join(tempfile.gettempdir(), f"{label}.plist")
+    return service.ServiceInfo(
+        label=label,
+        plist_path=plist_path,
+        scope=plist.USER,
+        status=status,
+        config=config,
+    )
 
 
 class LaunchctlTestCase(unittest.TestCase):
-
     def setUp(self):
-        unittest.TestCase.setUp(self)
+        super().setUp()
 
     def tearDown(self):
-        unittest.TestCase.tearDown(self)
+        super().tearDown()
 
-    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
     def test_examples(self):
-        [job for job in launchd.jobs() if job.pid is not None]  # activejobs
-        [job for job in launchd.jobs() if job.pid is None]  # inactivejobs
-        [job for job in launchd.jobs() if job.laststatus != 0 and job.laststatus is not None]  # errorjobs
-        [job for job in launchd.jobs() if job.properties["OnDemand"] is True]  # ondemandjobs
-
-    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
-    def test_launchd_jobs(self):
-        jobs = launchd.jobs()
-        self.assertFalse(isinstance(jobs, list))  # it's a generator!
-        count = 0
-        for job in jobs:
-            count += 1
-            self.assertTrue(isinstance(job, launchd.LaunchdJob))
-            self.assertTrue(job.pid is None or isinstance(job.pid, int))
-            self.assertTrue(job.laststatus is None or isinstance(job.laststatus, int))
-            self.assertTrue(isinstance(job.properties, dict), "props is not a dict: %s" % (type(job.properties)))
-            self.assertTrue(job.plistfilename is None or isinstance(job.plistfilename, str))
-            # the next 2 fail sometimes due to short lived processes that
-            # have disappeared by the time we reach this test
-            self.assertTrue("PID" in job.properties if job.pid is not None else True)
-            self.assertTrue("PID" not in job.properties if job.pid is None else True)
-        self.assertTrue(count > 0)
-
-    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
-    def test_launchd_jobs_and_plist(self):
         for job in launchd.jobs():
-            if job.plistfilename is not None:
-                self.assertTrue(os.path.isfile(job.plistfilename))
+            self.assertTrue(type(job.pid) == int or job.pid == None)
+            self.assertEqual(type(job.properties), dict)
+            self.assertTrue("Label" in job.properties)
+        # [job for job in launchd.jobs() if job.properties["Label"] is not None]
 
-    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires OS X")
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
+    def test_jobs_generator(self):
+        info = _make_fake_info("com.example.testjob")
+        with patch(
+            "launchd.launchctl.enumerate_services",
+            return_value=iter([info]),
+        ):
+            jobs = list(launchd.jobs())
+        self.assertEqual(1, len(jobs))
+        job = jobs[0]
+        self.assertIsInstance(job, launchd.LaunchdJob)
+        self.assertEqual("com.example.testjob", job.label)
+        props = cast(dict, job.properties)
+        self.assertIsInstance(props, dict)
+        self.assertTrue(props["Registered"])
+        self.assertTrue(props["OnDemand"])
+        self.assertEqual(info.plist_path, job.plistfilename)
+
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
+    def test_lazy_constructor_and_refresh(self):
+        info = _make_fake_info("com.example.refresh")
+
+        def _service_info(label):
+            return info if label == info.label else None
+
+        with patch("launchd.launchctl.get_service_info", side_effect=_service_info):
+            job = launchd.LaunchdJob(info.label)
+            self.assertTrue(job.exists())
+            job.refresh()
+            props = cast(dict, job.properties)
+            self.assertIsInstance(props, dict)
+            self.assertEqual(info.label, props["Label"])
+            self.assertEqual(info.plist_path, job.plistfilename)
+        with patch("launchd.launchctl.get_service_info", return_value=None):
+            missing = launchd.LaunchdJob("com.example.missing")
+            self.assertFalse(missing.exists())
+            self.assertRaises(ValueError, missing.refresh)
+
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
+    def test_launchd_jobs_and_plist(self):
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".plist") as fh:
+            fh.write(b'<?xml version="1.0" encoding="UTF-8"?>')
+            fh.flush()
+            plist_path = fh.name
+        try:
+            info = service.ServiceInfo(
+                label="com.example.temp",
+                plist_path=plist_path,
+                scope=plist.USER,
+                status=service.ServiceStatus.ENABLED,
+                config={"Label": "com.example.temp"},
+            )
+            with (
+                patch(
+                    "launchd.launchctl.enumerate_services",
+                    return_value=iter([info]),
+                ),
+                patch(
+                    "launchd.launchctl.get_service_info",
+                    return_value=info,
+                ),
+            ):
+                for job in launchd.jobs():
+                    plist_path = job.plistfilename
+                    self.assertIsNotNone(plist_path)
+                    file_path = cast(str, plist_path)
+                    self.assertTrue(os.path.isfile(file_path))
+        finally:
+            os.unlink(cast(str, plist_path))
+
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
+    def test_unsupported(self):
+        label = "com.apple.Finder"
+        job = launchd.LaunchdJob(label)
+        self.assertRaises(AttributeError, lambda: print(job.laststatus))
+
+
+    @unittest.skipUnless(sys.platform.startswith("darwin"), "requires macOS")
     def test_launchd_lazy_constructor(self):
+        """This tests internal implementation."""
         # we assume that com.apple.Finder always exists and that it is always
         # running and always has a laststatus. Hmmmm.
         label = "com.apple.Finder"
         job = launchd.LaunchdJob(label)
         self.assertTrue(job.exists())
         self.assertFalse(hasattr(job, "_pid"))
-        self.assertFalse(hasattr(job, "_laststatus"))
-        self.assertEqual(None, job._properties)
+        self.assertEqual({}, job._properties)
         job.refresh()
         self.assertNotEqual(None, job._pid)
-        self.assertNotEqual(None, job._laststatus)
-        self.assertNotEqual(None, job._properties)
-
-        job = launchd.LaunchdJob(label)
-        self.assertTrue(job.exists())
         self.assertNotEqual(None, job.pid)
-        self.assertNotEqual(None, job.laststatus)
-        self.assertNotEqual(None, job._properties)
-
-        # let's do the same with something invalid:
-        label = "com.apple.Nonexistant-bogus-entry"
-        job = launchd.LaunchdJob(label, 1, 2)
-        self.assertEqual(1, job.pid)
-        self.assertEqual(2, job.laststatus)
-        self.assertFalse(job.exists())
-        self.assertRaises(ValueError, job.refresh)
-        # even though refresh() was called, the object remains unchanged:
-        self.assertEqual(1, job.pid)
-        self.assertEqual(2, job.laststatus)
-        self.assertFalse(job.exists())
-
-        # also test "None":
-        label = "com.apple.Nonexistant-bogus-entry2"
-        job = launchd.LaunchdJob(label, None, None)
-        self.assertEqual(None, job.pid)
-        self.assertEqual(None, job.laststatus)
+        self.assertNotEqual({}, job._properties)

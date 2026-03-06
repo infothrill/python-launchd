@@ -24,7 +24,7 @@ def compute_filename(label: str, scope: int) -> str:
     return os.path.join(compute_directory(scope), label + ".plist")
 
 
-def discover_filename(label: str, scopes: None | tuple[int] | list[int] = None) -> str | None:
+def discover_filename(label: str, scopes: None | int | tuple[int] | list[int] = None) -> str | None:
     """
     Check the filesystem for the existence of a .plist file matching the job label.
     Optionally specify one or more scopes to search (default all).
@@ -44,8 +44,12 @@ def discover_filename(label: str, scopes: None | tuple[int] | list[int] = None) 
 
 
 def read(label: str, scope: int | None = None):
-    with open(discover_filename(label, scope), "rb") as f:
-        return plistlib.load(f)
+    fname = discover_filename(label, scope)
+    if fname is not None:
+        with open(fname, "rb") as f:
+            return plistlib.load(f)
+    else:
+        raise ValueError(f"No plist file found for label {label} and scope {scope}!")
 
 
 def write(label: str, plist, scope=USER) -> str:

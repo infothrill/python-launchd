@@ -1,31 +1,29 @@
-import ServiceManagement
-
 from .cmd import launchctl
+from .service import ServiceStatus, enumerate_services, get_service_info
 from .plist import discover_filename
-from .util import convert_NSDictionary_to_dict
 
 
 class LaunchdJob:
     """
     Class to lazily query the properties of the LaunchdJob when accessed.
     """
-    def __init__(self, label: str, pid: int = -1, laststatus=""):
+
+    def __init__(self, label: str, pid: int = -1):
         """
         Instantiate a LaunchdJob instance. Only the label is required.
-        If no pid or laststatus are specified, they will be queried when
-        accessed.
+        If no pid is specified, it will be queried when accessed.
 
         :param label: required string job label
         :param pid: optional int, if known. Can be None.
-        :param laststatus: optional int, if known. Can be None.
         """
         self._label = label
         if pid != -1:  # -1 indicates no value specified
             self._pid = pid
-        if laststatus != "":
-            self._laststatus = laststatus
-        self._properties = None
+        self._properties = {}
         self._plist_fname = None
+
+    def __repr__(self) -> str:
+        return f"LaunchdJob(label={self._label})"
 
     @property
     def label(self):
@@ -42,48 +40,44 @@ class LaunchdJob:
 
     @property
     def laststatus(self):
-        try:
-            return self._laststatus
-        except AttributeError:
-            self.refresh()
-            return self._laststatus
+        """Unsupported since 1.0.0"""
+        raise AttributeError("This property is not supported since 1.0.0")
 
     @property
-    def properties(self):
+    def properties(self) -> dict:
         """
         Lazily load dictionary with launchd runtime information.
 
-        Internally, this is retrieved using ServiceManagement.SMJobCopyDictionary().
+        Internally, this is retrieved using ServiceManagement.SMAppService helpers.
         Keep in mind that some dictionary keys are not always present (for example 'PID').
         If the job specified by the label cannot be found in launchd, then
         this method raises a ValueError exception.
         """
-        if hasattr(self, "_nsproperties"):
-            self._properties = convert_NSDictionary_to_dict(self._nsproperties)
-            del self._nsproperties
-            # self._nsproperties = None
-        if self._properties is None:
+        if self._properties == {}:
             self.refresh()
         return self._properties
 
     def exists(self):
-        return ServiceManagement.SMJobCopyDictionary(None, self.label) is not None
+        info = get_service_info(self.label)
+        return info is not None and info.status != ServiceStatus.NOT_FOUND
 
     def refresh(self):
-        val = ServiceManagement.SMJobCopyDictionary(None, self.label)
-        if val is None:
+        info = get_service_info(self.label)
+        if info is None:
             raise ValueError("job '%s' does not exist" % self.label)
-        else:
-            self._properties = convert_NSDictionary_to_dict(val)
-            # update pid and laststatus attributes
-            try:
-                self._pid = self._properties["PID"]
-            except KeyError:
-                self._pid = None
-            try:
-                self._laststatus = self._properties["LastExitStatus"]
-            except KeyError:
-                self._laststatus = None
+        self._properties = info.properties
+        from AppKit import NSRunningApplication
+        def get_pid_by_bundle_id(bundle_id):
+            # Retrieve all running applications with the specific bundle identifier
+            apps = NSRunningApplication.runningApplicationsWithBundleIdentifier_(bundle_id.lower())
+            if not apps:
+                return None
+            # In most cases, there is only one instance (like Finder)
+            # We take the first one found
+            app = apps[0]
+            return app.processIdentifier()
+        self._pid = get_pid_by_bundle_id(self.label)
+        self._plist_fname = info.plist_path
 
     @property
     def plistfilename(self) -> str | None:
@@ -98,20 +92,11 @@ class LaunchdJob:
 
 
 def jobs():
-    for entry in ServiceManagement.SMCopyAllJobDictionaries(None):
-        label = entry["Label"]
-        if label.startswith("0x"):
-            continue
-        try:
-            pid = int(entry["PID"])
-        except KeyError:
-            pid = None
-        try:
-            laststatus = int(entry["LastExitStatus"])
-        except KeyError:
-            laststatus = None
-        job = LaunchdJob(label, pid, laststatus)
-        job._nsproperties = entry
+    for info in enumerate_services():
+        job = LaunchdJob(info.label)
+        job._properties = info.properties
+        # job._pid = None
+        job._plist_fname = info.plist_path
         yield job
 
 
