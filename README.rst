@@ -28,18 +28,15 @@ Listing all launchd jobs:
 .. code-block:: python
 
     for job in launchd.jobs():
-        print(job.label, job.pid, job.laststatus, job.properties, job.plistfilename)
+        print(job.label, job.pid, job.properties, job.plistfilename)
 
 
-Find the pid and laststatus of a job:
+Find the pid of a job:
 
 .. code-block:: python
 
    >>> launchd.LaunchdJob("com.apple.Finder").pid
    278
-
-   >>> launchd.LaunchdJob("com.apple.Finder").laststatus
-   0
 
    >>> launchd.LaunchdJob("com.example.fubar").pid
    Traceback (most recent call last):
